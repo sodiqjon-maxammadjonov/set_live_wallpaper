@@ -9,7 +9,6 @@ abstract class MainState {
 
 final class MainInitial extends MainState {
   MainInitial({required super.switchIndex});
-
 }
 
 
