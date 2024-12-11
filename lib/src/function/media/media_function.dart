@@ -6,14 +6,14 @@ import 'package:set_live_wallpaper/src/model/media/media_from_db_model.dart';
 class MediaFunctions {
   Future<List<MediaFromDbModel>> loadMedia() async {
     final status = await Permission.storage.request();
-    log('Xotira ruxsati: ${status.isGranted ? "Ruxsat berildi" : "Ruxsat berilmagan"}',name: 'loadMedia');
+    log('Xotira ruxsati: ${status.isGranted ? "Ruxsat berildi" : "Ruxsat berilmagan"}', name: 'loadMedia');
 
     if (!status.isGranted) {
       throw Exception("Xotira uchun ruxsat berilmagan!");
     }
 
-    final directory = Directory('/storage/emulated/0');
-    log('Xotira katalogi: ${directory.path}',name: 'directory');
+    final directory = Directory('/storage/emulated/0'); // Android tizimida xotira yo‘li
+    log('Xotira katalogi: ${directory.path}', name: 'directory');
 
     if (!await directory.exists()) {
       print('Xotira katalogini yuklashda xatolik!');

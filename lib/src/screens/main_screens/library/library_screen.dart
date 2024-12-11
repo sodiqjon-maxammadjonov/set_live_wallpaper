@@ -16,7 +16,7 @@ class LibraryScreen extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Kutubxona'),
         actions: [
-          PopupMenuButton<MediaType>(  // Use MediaType from library_event.dart
+          PopupMenuButton<MediaType>(
             onSelected: (mediaType) {
               libraryBloc.add(FilterMediaEvent(mediaType));
             },

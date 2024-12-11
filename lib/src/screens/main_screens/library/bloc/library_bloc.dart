@@ -10,14 +10,14 @@ class LibraryBloc extends Bloc<LibraryEvent, LibraryState> {
   final MediaFunctions mediaFunctions;
   List<MediaFromDbModel> _allMedia = [];
 
-  LibraryBloc({required this.mediaFunctions}) : super(LibraryLoadingState()) {
+  LibraryBloc({required this.mediaFunctions}) : super(LibraryInitial()) {
     on<LoadMediaEvent>((event, emit) async {
       emit(LibraryLoadingState());
       try {
         _allMedia = await mediaFunctions.loadMedia();
         emit(LibraryLoadedState(_allMedia));
       } catch (e) {
-        emit(LibraryErrorState("Media yuklashda xatolik yuz berdi."));
+        emit(LibraryErrorState("Media yuklashda xatolik yuz berdi: $e"));
       }
     });
 

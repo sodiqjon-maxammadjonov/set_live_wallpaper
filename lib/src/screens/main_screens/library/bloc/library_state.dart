@@ -3,7 +3,7 @@ part of 'library_bloc.dart';
 @immutable
 abstract class LibraryState {}
 
-final class LibraryInitial extends LibraryState {}
+class LibraryInitial extends LibraryState {}
 
 class LibraryLoadingState extends LibraryState {}
 
