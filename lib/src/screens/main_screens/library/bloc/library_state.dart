@@ -1,20 +1,20 @@
 part of 'library_bloc.dart';
 
 @immutable
-abstract class LibraryState {}
+sealed class LibraryState {}
 
-class LibraryInitial extends LibraryState {}
+final class LibraryInitial extends LibraryState {}
 
-class LibraryLoadingState extends LibraryState {}
+final class LibraryLoadingState extends LibraryState {}
 
-class LibraryLoadedState extends LibraryState {
-  final List<MediaFromDbModel> media;
+final class LibraryEmptyState extends LibraryState {}
 
-  LibraryLoadedState(this.media);
+class LibrarySuccessState extends LibraryState {
+  final List<File> mediaFiles;
+  LibrarySuccessState(this.mediaFiles);
 }
 
 class LibraryErrorState extends LibraryState {
-  final String error;
-
-  LibraryErrorState(this.error);
+  final String errorMessage;
+  LibraryErrorState(this.errorMessage);
 }

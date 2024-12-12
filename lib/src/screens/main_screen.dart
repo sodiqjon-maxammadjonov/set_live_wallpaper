@@ -1,9 +1,8 @@
 import 'package:animated_notch_bottom_bar/animated_notch_bottom_bar/animated_notch_bottom_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../function/media/media_function.dart';
+import 'package:set_live_wallpaper/src/screens/test_screen/test.dart';
 import 'bloc/main_bloc.dart';
-import 'main_screens/library/bloc/library_bloc.dart';
 import 'main_screens/library/library_screen.dart';
 
 class MainScreen extends StatelessWidget {
@@ -71,9 +70,6 @@ List<BottomBarItem> bottomBarItems = const <BottomBarItem>[
 
 List<Widget> bottomNavScreen = <Widget>[
   const Text('Index 0: Home', style: TextStyle(fontSize: 24)),
-  BlocProvider<LibraryBloc>(
-    create: (context) => LibraryBloc(mediaFunctions: MediaFunctions()),
-    child: const LibraryScreen(),
-  ),
-  const Text('Index 2: Settings', style: TextStyle(fontSize: 24)),
+  LibraryScreen(),
+  TestScreen(),
 ];

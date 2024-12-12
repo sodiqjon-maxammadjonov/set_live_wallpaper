@@ -1,43 +1,80 @@
 import 'dart:developer';
 import 'dart:io';
-import 'package:permission_handler/permission_handler.dart';
-import 'package:set_live_wallpaper/src/model/media/media_from_db_model.dart';
+import 'package:flutter/services.dart';
+import 'package:set_live_wallpaper/src/screens/main_screens/library/bloc/library_bloc.dart';
 
-class MediaFunctions {
-  Future<List<MediaFromDbModel>> loadMedia() async {
-    final status = await Permission.storage.request();
-    log('Xotira ruxsati: ${status.isGranted ? "Ruxsat berildi" : "Ruxsat berilmagan"}', name: 'loadMedia');
+class MediaFunction {
+  static const MethodChannel _channel = MethodChannel('media_library_channel');
+  final void Function(LibraryState)? emit;
 
-    if (!status.isGranted) {
-      throw Exception("Xotira uchun ruxsat berilmagan!");
-    }
+  MediaFunction({this.emit});
 
-    final directory = Directory('/storage/emulated/0'); // Android tizimida xotira yo‘li
-    log('Xotira katalogi: ${directory.path}', name: 'directory');
+  Future<void> fetchVideos() async {
+    emit?.call(LibraryLoadingState());
 
-    if (!await directory.exists()) {
-      print('Xotira katalogini yuklashda xatolik!');
-      throw Exception("Xotira katalogini yuklashda xatolik!");
-    }
-
-    final List<MediaFromDbModel> mediaItems = [];
-    final List<FileSystemEntity> files = directory.listSync(recursive: true, followLinks: false);
-    log('Fayllar ro\'yxati: ${files.length} ta fayl topildi.');
-
-    for (var file in files) {
-      final path = file.path.toLowerCase();
-      log('Fayl: $path');
-
-      if (path.endsWith('.jpg') || path.endsWith('.jpeg') || path.endsWith('.png')) {
-        log('Rasm topildi: $path');
-        mediaItems.add(MediaFromDbModel(path: file.path, type: MediaType.images));
-      } else if (path.endsWith('.mp4') || path.endsWith('.mkv')) {
-        log('Video topildi: $path');
-        mediaItems.add(MediaFromDbModel(path: file.path, type: MediaType.videos));
+    try {
+      if (Platform.isAndroid) {
+        await _fetchAndroidVideos();
+      } else if (Platform.isIOS) {
+        await _fetchIOSVideos();
+      } else {
+        emit?.call(LibraryErrorState('Qo\'llab-quvvatlanmaydigan platforma'));
       }
+    } on PlatformException catch (e) {
+      log('Platform xatosi: ${e.message}', name: 'fetchVideos');
+      emit?.call(LibraryErrorState(e.message ?? 'Noma\'lum xatolik'));
+    } catch (e) {
+      log('Videolarni olishda xatolik: $e', name: 'fetchVideos');
+      emit?.call(LibraryErrorState(e.toString()));
     }
-
-    log('Jami media elementlari: ${mediaItems.length}');
-    return mediaItems;
   }
+
+  Future<void> _fetchAndroidVideos() async {
+    try {
+      final result = await _channel.invokeMethod<List>('getVideosFromStorage');
+
+      log('Android platformda videolar olindi.');
+      log('Olingan videolar: $result');
+
+      if (result == null || result.isEmpty) {
+        emit?.call(LibraryEmptyState());
+      } else {
+        final videoFiles = result
+            .map((path) => File(path.toString()))
+            .toList();
+
+        emit?.call(LibrarySuccessState(videoFiles));
+      }
+    } catch (e) {
+      log('Android videolarini olishda xatolik: $e', name: 'fetchAndroidVideos');
+      emit?.call(LibraryErrorState(e.toString()));
+    }
+  }
+
+  // iOS uchun video olish metodi
+  Future<void> _fetchIOSVideos() async {
+    try {
+      // Native metodni to'g'ri chaqirish
+      final result = await _channel.invokeMethod<List>('getVideosFromGallery');
+
+      log('iOS platformda videolar olindi.');
+      log('Olingan videolar: $result');
+
+      if (result == null || result.isEmpty) {
+        emit?.call(LibraryEmptyState());
+      } else {
+        // Stringlarni Filega o'girish
+        final videoFiles = result
+            .map((path) => File(path.toString()))
+            .toList();
+
+        emit?.call(LibrarySuccessState(videoFiles));
+      }
+    } catch (e) {
+      log('iOS videolarini olishda xatolik: $e', name: 'fetchIOSVideos');
+      emit?.call(LibraryErrorState(e.toString()));
+    }
+  }
+
 }
+
