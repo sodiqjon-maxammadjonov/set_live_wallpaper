@@ -1,5 +1,4 @@
 package com.example.set_live_wallpaper
-
 import android.os.Bundle
 import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.engine.FlutterEngine
@@ -7,7 +6,6 @@ import io.flutter.plugin.common.MethodChannel
 import android.database.Cursor
 import android.provider.MediaStore
 import java.util.ArrayList
-
 class MainActivity : FlutterActivity() {
     private val CHANNEL = "media_library_channel"
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {

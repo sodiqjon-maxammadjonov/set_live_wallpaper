@@ -51,10 +51,8 @@ class MediaFunction {
     }
   }
 
-  // iOS uchun video olish metodi
   Future<void> _fetchIOSVideos() async {
     try {
-      // Native metodni to'g'ri chaqirish
       final result = await _channel.invokeMethod<List>('getVideosFromGallery');
 
       log('iOS platformda videolar olindi.');
@@ -63,7 +61,6 @@ class MediaFunction {
       if (result == null || result.isEmpty) {
         emit?.call(LibraryEmptyState());
       } else {
-        // Stringlarni Filega o'girish
         final videoFiles = result
             .map((path) => File(path.toString()))
             .toList();

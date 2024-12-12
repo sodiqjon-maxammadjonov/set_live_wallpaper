@@ -25,7 +25,7 @@ class LibraryScreen extends StatelessWidget {
                     leading: Icon(Icons.video_library),
                     title: Text(state.mediaFiles[index].path),
                     onTap: () {
-                      // Add functionality for video selection here.
+
                     },
                   );
                 },

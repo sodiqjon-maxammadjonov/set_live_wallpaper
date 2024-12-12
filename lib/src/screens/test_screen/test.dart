@@ -21,8 +21,6 @@ class TestScreen extends StatelessWidget {
               onPressed: () async {
                 final mediaFunction = MediaFunction(emit: (state) {
                   log('State: $state');
-
-                  // State bo'yicha qo'shimcha ishlar
                   if (state is LibrarySuccessState) {
                     log('Videolar soni: ${state.mediaFiles.length}');
                   } else if (state is LibraryErrorState) {

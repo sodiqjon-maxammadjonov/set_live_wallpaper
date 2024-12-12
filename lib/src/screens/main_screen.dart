@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:animated_notch_bottom_bar/animated_notch_bottom_bar/animated_notch_bottom_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -6,8 +8,8 @@ import 'bloc/main_bloc.dart';
 import 'main_screens/library/library_screen.dart';
 
 class MainScreen extends StatelessWidget {
-  const MainScreen({super.key});
-
+   MainScreen({super.key});
+  List<File> videoFiles = [];
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -52,7 +54,7 @@ class MainScreen extends StatelessWidget {
 
 List<BottomBarItem> bottomBarItems = const <BottomBarItem>[
   BottomBarItem(
-    inActiveItem: Icon(Icons.home_outlined),
+    inActiveItem: Icon(Icons.home_rounded),
     activeItem: Icon(Icons.home_rounded),
     itemLabel: 'Home',
   ),
