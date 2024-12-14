@@ -27,7 +27,7 @@ class TestScreen extends StatelessWidget {
                     log('Xatolik: ${state.errorMessage}');
                   }
                 });
-                await mediaFunction.fetchVideos();
+                await mediaFunction.fetchImages();
               },
               child: const Text('Fetch Videos'),
             ),

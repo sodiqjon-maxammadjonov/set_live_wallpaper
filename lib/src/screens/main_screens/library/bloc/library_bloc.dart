@@ -20,7 +20,7 @@ class LibraryBloc extends Bloc<LibraryEvent, LibraryState> {
     emit(LibraryLoadingState());
     try {
 
-      await MediaFunction(emit: emit.call).fetchVideos();
+      await MediaFunction(emit: emit.call).fetchImages();
     } catch (e) {
       emit(LibraryErrorState('Videolarni olishda xatolik: $e'));
     }

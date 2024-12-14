@@ -9,69 +9,61 @@ class MediaFunction {
 
   MediaFunction({this.emit});
 
-  Future<void> fetchVideos() async {
+  Future<void> fetchImages() async {
     emit?.call(LibraryLoadingState());
 
     try {
       if (Platform.isAndroid) {
-        await _fetchAndroidVideos();
+        await _fetchAndroidImages();
       } else if (Platform.isIOS) {
-        await _fetchIOSVideos();
+        await _fetchIOSImages();
       } else {
         emit?.call(LibraryErrorState('Qo\'llab-quvvatlanmaydigan platforma'));
       }
     } on PlatformException catch (e) {
-      log('Platform xatosi: ${e.message}', name: 'fetchVideos');
+      log('Platform xatosi: ${e.message}', name: 'fetchImages');
       emit?.call(LibraryErrorState(e.message ?? 'Noma\'lum xatolik'));
     } catch (e) {
-      log('Videolarni olishda xatolik: $e', name: 'fetchVideos');
+      log('Rasmlarni olishda xatolik: $e', name: 'fetchImages');
       emit?.call(LibraryErrorState(e.toString()));
     }
   }
 
-  Future<void> _fetchAndroidVideos() async {
+  Future<void> _fetchAndroidImages() async {
     try {
-      final result = await _channel.invokeMethod<List>('getVideosFromStorage');
+      final result = await _channel.invokeMethod<List>('getImagesFromStorage');
 
-      log('Android platformda videolar olindi.');
-      log('Olingan videolar: $result');
+      log('Android platformda rasmlar olindi.');
+      log('Olingan rasmlar: $result');
 
       if (result == null || result.isEmpty) {
         emit?.call(LibraryEmptyState());
       } else {
-        final videoFiles = result
-            .map((path) => File(path.toString()))
-            .toList();
-
-        emit?.call(LibrarySuccessState(videoFiles));
+        final imageFiles = result.map((path) => File(path.toString())).toList();
+        emit?.call(LibrarySuccessState(imageFiles));
       }
     } catch (e) {
-      log('Android videolarini olishda xatolik: $e', name: 'fetchAndroidVideos');
+      log('Android rasmlarini olishda xatolik: $e', name: 'fetchAndroidImages');
       emit?.call(LibraryErrorState(e.toString()));
     }
   }
 
-  Future<void> _fetchIOSVideos() async {
+  Future<void> _fetchIOSImages() async {
     try {
-      final result = await _channel.invokeMethod<List>('getVideosFromGallery');
+      final result = await _channel.invokeMethod<List>('getImagesFromGallery');
 
-      log('iOS platformda videolar olindi.');
-      log('Olingan videolar: $result');
+      log('iOS platformda rasmlar olindi.');
+      log('Olingan rasmlar: $result');
 
       if (result == null || result.isEmpty) {
         emit?.call(LibraryEmptyState());
       } else {
-        final videoFiles = result
-            .map((path) => File(path.toString()))
-            .toList();
-
-        emit?.call(LibrarySuccessState(videoFiles));
+        final imageFiles = result.map((path) => File(path.toString())).toList();
+        emit?.call(LibrarySuccessState(imageFiles));
       }
     } catch (e) {
-      log('iOS videolarini olishda xatolik: $e', name: 'fetchIOSVideos');
+      log('iOS rasmlarini olishda xatolik: $e', name: 'fetchIOSImages');
       emit?.call(LibraryErrorState(e.toString()));
     }
   }
-
 }
-

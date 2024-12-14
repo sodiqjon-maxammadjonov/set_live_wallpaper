@@ -1,40 +1,38 @@
-package com.example.set_live_wallpaper
-import android.os.Bundle
+import android.os.Environment
 import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.MethodChannel
-import android.database.Cursor
-import android.provider.MediaStore
-import java.util.ArrayList
-class MainActivity : FlutterActivity() {
+import java.io.File
+
+class MainActivity: FlutterActivity() {
     private val CHANNEL = "media_library_channel"
+
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
         MethodChannel(flutterEngine.dartExecutor.binaryMessenger, CHANNEL).setMethodCallHandler { call, result ->
-            if (call.method == "getVideosFromStorage") {
-                val videoPaths = getVideosFromStorage()
-                result.success(videoPaths)
+            if (call.method == "getImagesFromStorage") {
+                val imagePaths = fetchImagesFromStorage()
+                result.success(imagePaths)
             } else {
                 result.notImplemented()
             }
         }
     }
-    private fun getVideosFromStorage(): List<String> {
-        val videoList = ArrayList<String>()
-        val projection = arrayOf(MediaStore.Video.Media.DATA)
-        val cursor: Cursor? = contentResolver.query(
-            MediaStore.Video.Media.EXTERNAL_CONTENT_URI,
-            projection,
-            null,
-            null,
-            null
-        )
-        cursor?.use {
-            val columnIndex = cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DATA)
-            while (cursor.moveToNext()) {
-                videoList.add(cursor.getString(columnIndex))
+
+    private fun fetchImagesFromStorage(): List<String> {
+        val imagePaths = mutableListOf<String>()
+        val externalStorageDir = Environment.getExternalStorageDirectory().path + "/Pictures"
+
+        val directory = File(externalStorageDir)
+        if (directory.exists()) {
+            val files = directory.listFiles { file ->
+                file.extension.equals("jpg", ignoreCase = true) ||
+                        file.extension.equals("jpeg", ignoreCase = true) ||
+                        file.extension.equals("png", ignoreCase = true)
             }
+            files?.forEach { file -> imagePaths.add(file.absolutePath) }
         }
-        return videoList
+
+        return imagePaths
     }
 }
